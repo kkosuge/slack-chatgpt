@@ -1,0 +1,8 @@
+{
+  "include": ["src/**/*"],
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "esModuleInterop": true
+  }
+}
