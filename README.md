@@ -1,5 +1,5 @@
 # Slack ChatGPT
-Slack Chatbot with OpenAI's GPT is a conversational chatbot that functions on Slack. This chatbot utilizes OpenAI's GPT-3 API, a state-of-the-art language model, to generate human-like responses during chat-based conversations.
+Slack Chatbot with OpenAI's GPT is a conversational chatbot that functions on Slack. This chatbot utilizes OpenAI's ChatGPT API, a state-of-the-art language model, to generate human-like responses during chat-based conversations.
 
 ## Functions
 - Automatically responds to mentions on Slack.
