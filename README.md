@@ -15,7 +15,7 @@ Slack Chatbot with OpenAI's GPT is a conversational chatbot that functions on Sl
 ## Installation and Setup
 0. Create a Slack app based on the manifest.yml file and obtain the SLACK_BOT_TOKEN and SLACK_APP_TOKEN. Also, create an OpenAI account and obtain an API Key.
 
-1. Clone this repository.
+1. Clone this repository.  
 $ git clone https://github.com/kkosuge/slack-chatgpt.git
 
 2. Install required libraries.  
