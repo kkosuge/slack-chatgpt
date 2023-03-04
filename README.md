@@ -18,15 +18,15 @@ Slack Chatbot with OpenAI's GPT is a conversational chatbot that functions on Sl
 1. Clone this repository.
 $ git clone https://github.com/kkosuge/slack-chatgpt.git
 
-2. Install required libraries.
+2. Install required libraries.  
 $ yarn install
 
-3. Copy the .env.sample file and rename it to .env.
+3. Copy the .env.sample file and rename it to .env.  
 $ cp .env.sample .env
 
 4. Edit .env file and insert your Slack API token and OpenAI API Key.
 
-5. Run the bot locally.
+5. Run the bot locally.  
 $ yarn dev
 
 ## Usage
