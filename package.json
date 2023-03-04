@@ -1,5 +1,5 @@
 {
-  "name": "slack-event-bot",
+  "name": "slack-chatgpt",
   "version": "1.0.0",
   "main": "app.js",
   "license": "MIT",
