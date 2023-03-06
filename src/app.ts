@@ -108,9 +108,18 @@ app.event('message', async ({ event, context, client, say }) => {
     limit: 100,
   })
 
+  // Don't reply if there are no messages
   if (!replies.messages || replies.messages?.length === 0) return
 
+  // Don't reply if the bot is the last message
   if (replies.messages[replies.messages.length - 1].bot_id === context.botId)
+    return
+
+  // Don't reply if the bot is not in the thread
+  if (
+    replies.messages.filter((message) => message.bot_id === context.botId)
+      .length === 0
+  )
     return
 
   const threadMessages: Message[] = replies.messages.map((message) => {
