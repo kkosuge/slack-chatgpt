@@ -8,11 +8,19 @@ Slack Chatbot with OpenAI's GPT is a conversational chatbot that functions on Sl
 - Has the ability to remember previous conversations with users.
 
 ## Required components
-- Node.js version 12 or later
 - Slack API tokens
 - An OpenAI API Key
 
-## Installation and Setup
+## Docker
+
+```
+cp .env.sample .env
+vim .env # edit .env file
+docker image build . -t slack-chatgpt
+docker run -it --env-file=.env slack-chatgpt
+```
+
+## Installation and Setup for Development
 0. Create a Slack app based on the manifest.yml file and obtain the SLACK_BOT_TOKEN and SLACK_APP_TOKEN. Also, create an OpenAI account and obtain an API Key.
 
 1. Clone this repository.  
