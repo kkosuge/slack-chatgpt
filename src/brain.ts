@@ -1,13 +1,4 @@
-import {
-  OpenAIApi,
-  Configuration,
-  ChatCompletionRequestMessageRoleEnum,
-} from 'openai'
-
-export type Message = {
-  role: ChatCompletionRequestMessageRoleEnum
-  content: string
-}
+import { OpenAIApi, Configuration, ChatCompletionRequestMessage } from 'openai'
 
 const systemContent =
   process.env.SYSTEM_MESSAGE ??
@@ -28,7 +19,7 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration)
 
-export function createContext(): Message[] {
+export function createContext(): ChatCompletionRequestMessage[] {
   return [
     {
       role: 'system',
@@ -37,8 +28,11 @@ export function createContext(): Message[] {
   ]
 }
 
-async function chatGPT(context: Message[], message: string) {
-  const messages: Message[] = [
+async function chatGPT(
+  context: ChatCompletionRequestMessage[],
+  message: string
+) {
+  const messages: ChatCompletionRequestMessage[] = [
     ...context,
     {
       role: 'user',
@@ -76,7 +70,10 @@ async function chatGPT(context: Message[], message: string) {
   }
 }
 
-export async function chat(context: Message[], message: string) {
+export async function chat(
+  context: ChatCompletionRequestMessage[],
+  message: string
+) {
   switch (true) {
     case /https?:\/\//.test(message):
       return urlMessage

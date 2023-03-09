@@ -1,7 +1,7 @@
 require('dotenv').config()
 import { App } from '@slack/bolt'
+import type { ChatCompletionRequestMessage } from 'openai'
 import { createContext, chat } from './brain'
-import type { Message } from './brain'
 
 const waitMessage = process.env.WAIT_MESSAGE ?? 'Please wait a second...'
 
@@ -56,23 +56,25 @@ app.event('message', async ({ event, context, client, say }) => {
   )
     return
 
-  const threadMessages: Message[] = replies.messages.map((message) => {
-    if (message.bot_id === context.botId) {
-      return {
-        role: 'assistant',
-        content: message.text!,
-      }
-    } else {
-      return {
-        role: 'user',
-        content: message.text!,
+  const threadMessages: ChatCompletionRequestMessage[] = replies.messages.map(
+    (message) => {
+      if (message.bot_id === context.botId) {
+        return {
+          role: 'assistant',
+          content: message.text!,
+        }
+      } else {
+        return {
+          role: 'user',
+          content: message.text!,
+        }
       }
     }
-  })
+  )
 
   const message = replies.messages[replies.messages.length - 1].text!
 
-  const messageContext: Message[] = [
+  const messageContext: ChatCompletionRequestMessage[] = [
     ...createContext(),
     ...threadMessages.filter((_, i) => i !== threadMessages.length - 1),
   ]
