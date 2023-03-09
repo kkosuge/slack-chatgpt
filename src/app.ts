@@ -1,28 +1,9 @@
-import { App } from '@slack/bolt'
-import {
-  OpenAIApi,
-  Configuration,
-  ChatCompletionRequestMessageRoleEnum,
-} from 'openai'
-
 require('dotenv').config()
-
-const systemContent =
-  process.env.SYSTEM_MESSAGE ??
-  `
-  You are a Slack bot.
-  You start a conversation triggered by a Mention addressed to you.
-  Each conversation message contains an Author ID.
-  The Author ID is in the form "<@Author ID> message text
-`
+import { App } from '@slack/bolt'
+import { createContext, chat } from './brain'
+import type { Message } from './brain'
 
 const waitMessage = process.env.WAIT_MESSAGE ?? 'Please wait a second...'
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
-const openai = new OpenAIApi(configuration)
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -30,64 +11,17 @@ const app = new App({
   socketMode: true,
 })
 
-type Message = {
-  role: ChatCompletionRequestMessageRoleEnum
-  content: string
-}
-
-async function chat(messages: Message[]) {
-  try {
-    const completion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages,
-    })
-
-    return completion.data.choices[0].message!.content
-  } catch (e: any) {
-    try {
-      const code = e.response.data.error.code
-      const message = e.response.data.error.message
-
-      if (
-        code === 'context_length_exceeded' &&
-        process.env.CONTEXT_LENGTH_EXCEEDED_MESSAGE
-      ) {
-        return process.env.CONTEXT_LENGTH_EXCEEDED_MESSAGE
-      }
-
-      if (message) {
-        return message
-      } else {
-        return 'unknown error'
-      }
-    } catch (e: any) {
-      return 'unknown error'
-    }
-  }
-}
-
 ;(async () => {
   await app.start()
 })()
 
 app.event('app_mention', async ({ event, context, client, say }) => {
-  const messages: Message[] = [
-    {
-      role: 'system',
-      content: systemContent,
-    },
-    {
-      role: 'user',
-      content: event.text,
-    },
-  ]
-
   const reply = await say({
     text: waitMessage,
     thread_ts: event.ts,
   })
 
-  const text = await chat(messages)
+  const text = await chat(createContext(), event.text)
 
   await client.chat.update({
     channel: event.channel,
@@ -136,12 +70,11 @@ app.event('message', async ({ event, context, client, say }) => {
     }
   })
 
-  const messages: Message[] = [
-    {
-      role: 'system',
-      content: systemContent,
-    },
-    ...threadMessages,
+  const message = replies.messages[replies.messages.length - 1].text!
+
+  const messageContext: Message[] = [
+    ...createContext(),
+    ...threadMessages.filter((_, i) => i !== threadMessages.length - 1),
   ]
 
   const reply = await say({
@@ -149,7 +82,7 @@ app.event('message', async ({ event, context, client, say }) => {
     thread_ts: event.ts,
   })
 
-  const text = await chat(messages)
+  const text = await chat(messageContext, message)
 
   await client.chat.update({
     channel: event.channel,
